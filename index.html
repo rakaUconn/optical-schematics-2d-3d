@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optical Schematics Builder — physical ray tracing · 2D / 3D</title>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="logo">OPTICAL SCHEMATICS BUILDER <span>· physical ray tracing · 1 px = 1 mm</span></div>
+    <div class="tabs">
+      <button id="tab2d" class="on">2D Editor</button>
+      <button id="tab3d">3D View</button>
+    </div>
+    <button class="hbtn" id="btnExample">Load example</button>
+    <div class="spacer"></div>
+    <button class="hbtn toggle on" id="btnSnap">Snap: on</button>
+    <button class="hbtn toggle on" id="btnLabels">Labels: on</button>
+    <button class="hbtn" id="btnSVG">Export SVG</button>
+    <button class="hbtn" id="btnJSON">Export JSON</button>
+    <button class="hbtn" id="btnImport">Import JSON</button>
+    <button class="hbtn" id="btnClear">Clear</button>
+    <input type="file" id="fileIn" accept=".json" style="display:none">
+  </header>
+  <aside id="library"></aside>
+  <main id="stage">
+    <svg id="svg2d" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="view3d"></div>
+    <div id="hint"></div>
+    <div id="coords"></div>
+    <div id="toast"></div>
+  </main>
+  <aside id="props"><h3>Properties</h3><div id="propBody" class="empty-note"></div></aside>
+</div>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

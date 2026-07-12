@@ -1,0 +1,21 @@
+{
+  "name": "optical-schematics-2d-3d",
+  "version": "1.0.0",
+  "description": "Physically-based ray-tracing schematic builder for optics benches, with linked 2D and 3D views.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "three": "0.128.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "vitest": "^2.1.0"
+  }
+}

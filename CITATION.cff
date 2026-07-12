@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Optical Schematics Builder — physical ray-tracing 2D/3D bench editor"
+type: software
+authors:
+  - family-names: Joshi
+    given-names: Rakesh
+repository-code: "https://github.com/rakaUconn/optical-schematics-2d-3d"
+url: "https://rakaUconn.github.io/optical-schematics-2d-3d/"
+license: Apache-2.0
+version: 1.0.0
+date-released: "2026-07-12"
+keywords:
+  - optics
+  - ray-tracing
+  - geometrical-optics
+  - vision-science
+  - myopia-control
+  - schematic-editor
+  - three.js

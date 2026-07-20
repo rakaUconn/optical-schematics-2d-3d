@@ -114,7 +114,11 @@ function surfacesOf(c) {
     case "cmirror": {
       const R = p.R,
         ph = Math.asin(Math.min(0.999, p.sd / R));
-      S.push(arc(T, -R, 0, R, -ph, ph, { t: "mirror" }, c));
+      // hitArc()'s normal points radially outward from the center of
+      // curvature, i.e. away from the concave (reflective) side — opposite
+      // of the flat mirror's front convention below — so this surface is
+      // tagged 'flip' to invert the front-side test in the 'mirror' case.
+      S.push(arc(T, -R, 0, R, -ph, ph, { t: "mirror", flip: true }, c));
       break;
     }
     case "bs": {
@@ -535,8 +539,13 @@ export function traceAll() {
         break;
       }
       case "mirror": {
-        const k = 2 * (r.d.x * best.nx + r.d.y * best.ny);
-        push({ x: r.d.x - k * best.nx, y: r.d.y - k * best.ny }, r.pw);
+        const dn = r.d.x * best.nx + r.d.y * best.ny;
+        // Front-surface only: a ray hitting the unsilvered back is
+        // absorbed by the mirror's opaque backing rather than reflecting.
+        if (a.flip ? dn > 0 : dn < 0) {
+          const k = 2 * dn;
+          push({ x: r.d.x - k * best.nx, y: r.d.y - k * best.ny }, r.pw);
+        }
         break;
       }
       case "bs": {

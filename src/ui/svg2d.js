@@ -2,15 +2,15 @@
  * 2D SVG rendering + pointer/wheel/keyboard interaction for the optics bench.
  * Reads scene state from ./state.js and ray-trace results from the engine.
  */
-import { traceAll } from '../engine/index.js';
-import { state, sel, snap, view, showLabels, byId, select, changed, removeComp } from './state.js';
+import { traceAll, PHYS } from '../engine/index.js';
+import { state, sel, snap, view, showLabels, byId, select, changed, removeComp, cosmetic, pasteComp } from './state.js';
 import { GLYPH } from './glyphs.js';
 import { esc } from './util.js';
 
 function raysSVG() {
   const tr = traceAll(); let o = '';
   for (const s of tr.segs)
-    o += `<line x1="${s.x1.toFixed(2)}" y1="${s.y1.toFixed(2)}" x2="${s.x2.toFixed(2)}" y2="${s.y2.toFixed(2)}" stroke="${s.col}" stroke-width="1.3" opacity="${(0.18 + 0.62 * Math.min(1, s.pw)).toFixed(2)}"/>`;
+    o += `<line x1="${s.x1.toFixed(2)}" y1="${s.y1.toFixed(2)}" x2="${s.x2.toFixed(2)}" y2="${s.y2.toFixed(2)}" stroke="${s.col}" stroke-width="1.3" opacity="${(0.05 + 0.75 * Math.min(1, s.pw)).toFixed(2)}"/>`;
   for (const h of tr.hits)
     o += `<circle cx="${h.x.toFixed(2)}" cy="${h.y.toFixed(2)}" r="2.2" fill="${h.col}" opacity="0.9"/>`;
   return `<g>${o}</g>`;
@@ -19,14 +19,18 @@ function compNodes(selectedId = sel) {
   let out = '';
   for (const c of state.comps) {
     if (!c.visible) continue;
+    let labelText = c.label;
+    if (PHYS[c.type]?.act === 'lens' && c.p.f) {
+      labelText += ` (f=${c.p.f})`;
+    }
     const selMark = (c.id === selectedId) ? `<circle class="selglow" r="46"/>` : '';
-    const lab = showLabels ? `<text class="clabel" y="58" transform="rotate(${-c.angle})">${esc(c.label)}</text>` : '';
+    const lab = showLabels ? `<text class="clabel" x="${c.label_x || 0}" y="${c.label_y || 58}" transform="rotate(${-c.angle})">${esc(labelText)}</text>` : '';
     out += `<g class="comp" data-id="${c.id}" transform="translate(${c.x},${c.y}) rotate(${c.angle})">${selMark}${GLYPH[c.type] || ''}${lab}</g>`;
   }
   return out;
 }
 function gridDefs() {
-  return `<defs><pattern id="holes" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="12.5" cy="12.5" r="1.1" fill="#26303c"/></pattern><linearGradient id="rain" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7f7fff"/><stop offset=".5" stop-color="#7ee08a"/><stop offset="1" stop-color="#ff5252"/></linearGradient></defs>`;
+  return `<defs><pattern id="holes" width="25.4" height="25.4" patternUnits="userSpaceOnUse"><circle cx="12.7" cy="12.7" r="1.1" fill="#26303c"/></pattern><linearGradient id="rain" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7f7fff"/><stop offset=".5" stop-color="#7ee08a"/><stop offset="1" stop-color="#ff5252"/></linearGradient></defs>`;
 }
 
 /** Serializes the current 2D scene (grid excluded) as a standalone SVG document, for export. */
@@ -63,8 +67,19 @@ export function createSvg2D(svg, coordsEl) {
   }
   svg.addEventListener('pointerdown', e => {
     svg.setPointerCapture(e.pointerId);
-    const g = e.target.closest('.comp'), w = evtWorld(e);
-    if (g) {
+    const g = e.target.closest('.comp');
+    const l = e.target.closest('.clabel');
+    const w = evtWorld(e);
+    if (l && g) {
+      const id = +g.dataset.id, c = byId(id);
+      select(id);
+      const dx = w.x - c.x;
+      const dy = w.y - c.y;
+      const th = c.angle * Math.PI / 180;
+      const lx = dx * Math.cos(-th) - dy * Math.sin(-th);
+      const ly = dx * Math.sin(-th) + dy * Math.cos(-th);
+      drag = { mode: 'label', id, offX: (c.label_x || 0) - lx, offY: (c.label_y || 58) - ly };
+    } else if (g) {
       const id = +g.dataset.id, c = byId(id);
       select(id);
       drag = { mode: 'comp', id, offX: c.x - w.x, offY: c.y - w.y };
@@ -82,6 +97,17 @@ export function createSvg2D(svg, coordsEl) {
       view.x = drag.vx - (e.clientX - drag.px) / r.width * view.w;
       view.y = drag.vy - (e.clientY - drag.py) / r.height * view.h;
       render();
+    } else if (drag.mode === 'label') {
+      const c = byId(drag.id); if (!c) return;
+      const w = evtWorld(e);
+      const dx = w.x - c.x;
+      const dy = w.y - c.y;
+      const th = c.angle * Math.PI / 180;
+      const lx = dx * Math.cos(-th) - dy * Math.sin(-th);
+      const ly = dx * Math.sin(-th) + dy * Math.cos(-th);
+      c.label_x = lx + drag.offX;
+      c.label_y = ly + drag.offY;
+      cosmetic();
     } else {
       const c = byId(drag.id); if (!c) return;
       let nx = w.x + drag.offX, ny = w.y + drag.offY;
@@ -104,6 +130,10 @@ export function createSvg2D(svg, coordsEl) {
   }, { passive: false });
   window.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'v' && (e.ctrlKey || e.metaKey)) {
+      pasteComp();
+      return;
+    }
     if (sel == null) return;
     const c = byId(sel); if (!c) return;
     if (e.key === 'Delete' || e.key === 'Backspace') removeComp(sel);

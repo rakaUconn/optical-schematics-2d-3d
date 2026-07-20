@@ -46,8 +46,8 @@ function applyMode(m) {
 createHeader(
   {
     tab2d: $('tab2d'), tab3d: $('tab3d'), btnExample: $('btnExample'),
-    btnSnap: $('btnSnap'), btnLabels: $('btnLabels'), btnSVG: $('btnSVG'),
-    btnJSON: $('btnJSON'), btnImport: $('btnImport'), btnClear: $('btnClear'),
+    btnSnap: $('btnSnap'), btnLabels: $('btnLabels'), btnBackward: $('btnBackward'), btnSVG: $('btnSVG'),
+    btnJSON: $('btnJSON'), btnImport: $('btnImport'), btnPaste: $('btnPaste'), btnClear: $('btnClear'),
     fileIn: $('fileIn')
   },
   { onModeChange: applyMode, toast }

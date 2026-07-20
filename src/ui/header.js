@@ -6,12 +6,12 @@
  */
 import { defaultsFor } from '../engine/index.js';
 import { NAME } from './catalog.js';
-import { state, snap, showLabels, setSnap, setShowLabels, setMode, setView, clearState, loadState, cosmetic, changed } from './state.js';
+import { state, snap, showLabels, backward, setSnap, setShowLabels, setBackward, setMode, setView, clearState, loadState, cosmetic, changed, pasteComp } from './state.js';
 import { exportSVG } from './svg2d.js';
 import { downloadBlob } from './util.js';
 
 export function createHeader(els, { onModeChange, toast }) {
-  const { tab2d, tab3d, btnExample, btnSnap, btnLabels, btnSVG, btnJSON, btnImport, btnClear, fileIn } = els;
+  const { tab2d, tab3d, btnExample, btnSnap, btnLabels, btnBackward, btnSVG, btnJSON, btnImport, btnPaste, btnClear, fileIn } = els;
 
   function selectMode(m) {
     setMode(m);
@@ -33,6 +33,11 @@ export function createHeader(els, { onModeChange, toast }) {
     btnLabels.classList.toggle('on', showLabels);
     cosmetic();
   };
+  btnBackward.onclick = () => {
+    setBackward(!backward);
+    btnBackward.textContent = `Backward: ${backward ? 'on' : 'off'}`;
+    btnBackward.classList.toggle('on', backward);
+  };
   btnClear.onclick = () => {
     if (confirm('Clear the whole schematic?')) clearState();
   };
@@ -53,6 +58,7 @@ export function createHeader(els, { onModeChange, toast }) {
     });
     e.target.value = '';
   };
+  btnPaste.onclick = () => pasteComp();
   btnSVG.onclick = () => {
     const svgDoc = exportSVG();
     if (!svgDoc) { toast('Nothing to export'); return; }

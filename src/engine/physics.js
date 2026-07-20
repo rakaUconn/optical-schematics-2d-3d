@@ -126,6 +126,8 @@ export const PHYS = {
     params: [
       ["f", "Focal length (mm)", -500, 500, 5, 200],
       ["sd", "Semi-diameter (mm)", 5, 40, 1, 25],
+      ["rx", "X-axis tilt, cosmetic (°)", -80, 80, 5, 20],
+      ["ry", "Y-axis tilt, cosmetic (°)", -80, 80, 5, 15],
     ],
   },
   mirror: {

@@ -25,7 +25,15 @@ function compNodes(selectedId = sel) {
     }
     const selMark = (c.id === selectedId) ? `<circle class="selglow" r="46"/>` : '';
     const lab = showLabels ? `<text class="clabel" x="${c.label_x || 0}" y="${c.label_y || 58}" transform="rotate(${-c.angle})">${esc(labelText)}</text>` : '';
-    out += `<g class="comp" data-id="${c.id}" transform="translate(${c.x},${c.y}) rotate(${c.angle})">${selMark}${GLYPH[c.type] || ''}${lab}</g>`;
+    // Cosmetic-only: components with rx/ry params (e.g. dlens) render their
+    // glyph foreshortened via scale(cos ry, cos rx) to fake a 3D tilt about
+    // the vertical/horizontal axes. Purely visual — doesn't affect tracing.
+    const sx = c.p.ry != null ? Math.cos(c.p.ry * Math.PI / 180) : 1;
+    const sy = c.p.rx != null ? Math.cos(c.p.rx * Math.PI / 180) : 1;
+    const glyph = (sx !== 1 || sy !== 1)
+      ? `<g transform="scale(${sx.toFixed(3)},${sy.toFixed(3)})">${GLYPH[c.type] || ''}</g>`
+      : (GLYPH[c.type] || '');
+    out += `<g class="comp" data-id="${c.id}" transform="translate(${c.x},${c.y}) rotate(${c.angle})">${selMark}${glyph}${lab}</g>`;
   }
   return out;
 }

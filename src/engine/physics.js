@@ -117,6 +117,17 @@ export const PHYS = {
       ["sd", "Semi-diameter (mm)", 5, 25, 1, 21],
     ],
   },
+  // Variable-focus placeholder, the transmissive analog of 'dm': an ideal
+  // thin lens whose focal length stands in for the membrane's live
+  // actuator/correction state (no higher-order wavefront shaping modeled,
+  // same simplification 'dm' makes for reflection).
+  dlens: {
+    act: "lens",
+    params: [
+      ["f", "Focal length (mm)", -500, 500, 5, 200],
+      ["sd", "Semi-diameter (mm)", 5, 40, 1, 25],
+    ],
+  },
   mirror: {
     act: "mirror",
     params: [["sd", "Semi-diameter (mm)", 5, 40, 1, 30]],

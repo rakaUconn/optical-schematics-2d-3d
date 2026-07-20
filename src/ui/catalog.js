@@ -18,6 +18,7 @@ export const LIB = [
       ["cyl", "Cyl. lens"],
       ["objective", "Objective"],
       ["badal", "Badal lens"],
+      ["dlens", "Deformable lens (transmission)"],
     ],
   },
   {

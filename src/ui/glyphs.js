@@ -15,6 +15,7 @@ export const GLYPH = {
   cyl: `<path class="glass" d="M0,-28 L0,28 C -12,14 -12,-14 0,-28 Z"/><path class="body" d="M0,-28 V28" stroke-dasharray="3 3"/>`,
   objective: `<path class="metal" d="M-22,-20 L4,-11 L4,11 L-22,20 Z"/><path class="glass" d="M4,-11 C 11,-6 11,6 4,11 Z"/>`,
   badal: `<path class="glass" d="M0,-30 C 11,-16 11,16 0,30 C -11,16 -11,-16 0,-30 Z"/><text y="-36">Badal</text>`,
+  dlens: `<circle class="metal" r="24"/><circle class="glass" r="14"/><circle class="body" r="8" stroke-dasharray="2 2" stroke-width="1"/><g class="tint"><circle cx="19" cy="0" r="2"/><circle cx="13.4" cy="13.4" r="2"/><circle cx="0" cy="19" r="2"/><circle cx="-13.4" cy="13.4" r="2"/><circle cx="-19" cy="0" r="2"/><circle cx="-13.4" cy="-13.4" r="2"/><circle cx="0" cy="-19" r="2"/><circle cx="13.4" cy="-13.4" r="2"/></g><text y="42">DL</text>`,
   mirror: `<path class="body" d="M0,-30 V30" stroke-width="3.5"/><g class="body" stroke-width="1"><path d="M0,-26 l7,-5 M0,-16 l7,-5 M0,-6 l7,-5 M0,4 l7,-5 M0,14 l7,-5 M0,24 l7,-5"/></g>`,
   curvedmirror: `<path class="body" d="M-8,-30 C 3,-14 3,14 -8,30" stroke-width="3.5"/><g class="body" stroke-width="1"><path d="M-6,-24 l8,-4 M-2,-14 l8,-4 M-1,-4 l8,-4 M-2,7 l8,-4 M-6,18 l8,-4"/></g>`,
   galvo: `<rect class="dark" x="-9" y="14" width="18" height="14" rx="2"/><path class="body" d="M-11,22 L0,14" stroke-width="1"/><path class="metal" d="M0,-24 L0,24" stroke-width="4" fill="none"/><text y="40">galvo</text>`,
